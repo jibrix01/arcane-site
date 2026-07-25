@@ -1,25 +1,18 @@
 const PREMONITIONS = [
-  "Comment your code before you sleep, not after \u2014 the you of tomorrow trusts the you of tonight less than you think.",
-  "Read the error message. All of it. The line you skipped is where the answer was hiding.",
-  "A study group of three moves faster than five and further than one.",
-  "Version control is not for when things break. Commit before you're afraid you'll need to.",
-  "The bug is almost never where you're looking. Widen the search before you rewrite the world.",
-  "Ask the question in section before it becomes the question you whisper before an exam.",
-  "Rubber duck it. Say the problem out loud before you say it's impossible.",
-  "Sleep debt compounds faster than technical debt, and it's the one that gets you first.",
-  "Write the test before the fix. You'll know exactly when you're done.",
-  "The professor's office hours are emptier than the anxiety in your chest suggests.",
-  "Group projects reward the first message, not the smartest one. Send it.",
-  "Your first solution rarely needs to be your best one. Ship it, then sharpen it.",
-  "Print statements are not cheating. They are a lantern in a dark function.",
-  "The syllabus is a map, not a prophecy. Check it before you assume the worst.",
-  "A clean desk won't fix a messy codebase, but it helps you notice which is which.",
-  "Deadlines fear the student who starts messy more than the one who waits for clarity.",
-  "Every senior you admire once stared at a blank file for an hour. That part never fully goes away.",
-  "Save your work in threes: locally, remotely, and in the memory of a friend who saw you do it.",
-  "The Stack Overflow answer with one upvote is sometimes the one written for exactly your case.",
-  "Take the walk. The compiler will still be wrong when you get back, but so will your patience be renewed.",
+  "Consult frequently! you learn a lot from constant back and forth feedback more than you think - Hina",
+  "Gameify your studies! - Hina",
+  "Make lots of good friends, they will be your lifeline - Diogn",
+  "Join a home org! - Barks",
+  "Don't be afraid to make mistakes. College becomes more worthwhile if you try new things. you're bound to make mistakes here and there, but that's when we grow - Joel",
+  "Balance your breadth and depth when it comes to trying things - Diogn",
+  "For group works: set boundaries early on/sign a contract to make sure everyone agrees with how you all plan to deal with task distribution, misunderstandings, and accountability - Hina",
+  'The motto of our university is "Honor and Excellence" and honor must always precede excellence - JV',
+  "Treat sleep as a non-negotiable. If need mo magpuyat, sanayin mo matulog at least 3hrs - JJ",
+  "Rest is productive, dont forget rest please (hypocrite toh guys) - Aeb",
+  "Explore spaces in UP! malay mo makakita ka ng magandang food spots, resting spots, 5 star cr spots with bidet, or goated libraries to study in - Aeb",
+  "Dont hesitate to ask anyone! youll be surprised at how accommodating everyone is in the university, from profs, higher batchs, batchmates, orgmates, basically anyone - Aeb",
 ];
+
 
 (function () {
   const card = document.getElementById("whisper-card");
