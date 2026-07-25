@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<canvas id="embers" aria-hidden="true"></canvas>
+
+<header class="rune-bar">
+  <a href="index.html" class="rune-bar__mark">
+    <img src="assets/logo/full-logo.svg" alt="Arcane Houses" class="rune-bar__logo">
+  </a>
+  <nav>
+    <ul class="rune-nav">
+      <li><a href="tracker.html" class="active">Score Tracker</a></li>
+      <li><a href="whispers.html">Whispers of the Arcane</a></li>
+      <li><a href="houses.html">The Houses</a></li>
+      <li><a href="roadmap.html">Program &amp; Events</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <p class="eyebrow">Destiny awaits.</p>
+      <h1>Score Tracker</h1>
+      <p>Only few shall be chosen by the Arcane.</p>
+    </div>
+
+    <div class="tracker-panel">
+      <div class="chart" id="chart" role="img" aria-label="Bar chart of house scores"></div>
+      <div style="text-align:center; margin-top:1.5rem;">
+        <button class="rune-button" id="refresh-btn">&#10022; REFRESH</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  &#10022; The Arcana watches in silence &#10022;
+</footer>
+
+<script src="js/embers.js"></script>
+<script src="js/sheets.js"></script>
+<script src="js/tracker.js"></script>
+</body>
+</html>

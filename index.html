@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arcane Houses</title>
+<meta name="description" content="Eight houses. One deck of fate. Track scores, draw premonitions, and meet the houses of the Arcane freshman event." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<canvas id="embers" aria-hidden="true"></canvas>
+
+<header class="rune-bar">
+  <a href="index.html" class="rune-bar__mark">
+    <img src="assets/logo/full-logo.svg" alt="Arcane Houses" class="rune-bar__logo">
+  </a>
+  <nav>
+    <ul class="rune-nav">
+      <li><a href="tracker.html">Score Tracker</a></li>
+      <li><a href="whispers.html">Whispers of the Arcane</a></li>
+      <li><a href="houses.html">The Houses</a></li>
+      <li><a href="roadmap.html">Program &amp; Events</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <svg class="hero__sigil" viewBox="0 0 200 200" fill="none" stroke="#c9a227" stroke-width="0.6" aria-hidden="true">
+      <circle cx="100" cy="100" r="92" opacity="0.5"/>
+      <circle cx="100" cy="100" r="70" opacity="0.35"/>
+      <circle cx="100" cy="100" r="46" opacity="0.6"/>
+      <path d="M100 8 L100 192 M8 100 L192 100" opacity="0.25"/>
+      <path d="M100 30 L163 137 L37 137 Z" opacity="0.5"/>
+      <path d="M100 170 L37 63 L163 63 Z" opacity="0.5"/>
+      <circle cx="100" cy="100" r="4" fill="#c9a227" stroke="none" opacity="0.8"/>
+    </svg>
+
+    <p class="hero__eyebrow"></p>
+    <h1>Eight chosen houses. One shall remain gilded.</h1>
+    <p class="hero__teaser">The cards have been drawn, and the deck of fate has granted you a house. The stars have aligned, and your journey begins here.</p>
+
+    <nav class="portal-links" aria-label="Site sections">
+      <a class="portal-link" href="tracker.html"><span class="num">I</span>Score Tracker</a>
+      <span class="portal-divider">&#10022;</span>
+      <a class="portal-link" href="whispers.html"><span class="num">II</span>Whispers of the Arcane</a>
+      <span class="portal-divider">&#10022;</span>
+      <a class="portal-link" href="houses.html"><span class="num">III</span>The Houses</a>
+      <span class="portal-divider">&#10022;</span>
+      <a class="portal-link" href="roadmap.html"><span class="num">IV</span>Navigation</a>
+    </nav>
+  </section>
+</main>
+
+<footer class="site-foot">
+  &#10022; The Arcana watches in silence &#10022;
+</footer>
+
+<script src="js/embers.js"></script>
+</body>
+</html>
