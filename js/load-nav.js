@@ -7,4 +7,4 @@ async function loadComponent(id, file) {
   element.innerHTML = html;
 }
 
-loadComponent("nav-placeholder", "components/nav.html");
+loadComponent("nav-placeholder", "/components/nav.html");

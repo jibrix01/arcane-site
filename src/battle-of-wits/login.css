@@ -1,0 +1,225 @@
+/*
+  login.css
+  Companion stylesheet for login.html.
+  Uses --login-* custom properties and .login-* classes so nothing here
+  overrides or collides with your existing css/style.css.
+  Colors are a best guess at your dark/arcane/gilded palette (Caudex serif,
+  embers canvas, gold "gilded" accent) — adjust the variables below to match
+  your real tokens once you diff this against style.css.
+*/
+
+:root {
+  --login-bg-deep: #0b0a10;
+  --login-bg-panel: rgba(28, 21, 38, 0.72);
+  --login-border: rgba(212, 175, 55, 0.35);
+  --login-border-strong: rgba(212, 175, 55, 0.75);
+  --login-gold: #d4af37;
+  --login-gold-soft: #e8cf7a;
+  --login-ink: #ece6d8;
+  --login-ink-dim: rgba(236, 230, 216, 0.65);
+  --login-danger: #e0654f;
+  --login-success: #7fbf8f;
+  --login-radius: 14px;
+}
+
+.login-main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+}
+
+.login-wrap {
+  width: 100%;
+  max-width: 480px;
+}
+
+.login-head {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-card {
+  position: relative;
+  background: var(--login-bg-panel);
+  border: 1px solid var(--login-border);
+  border-radius: var(--login-radius);
+  padding: 2.5rem 2rem 2rem;
+  backdrop-filter: blur(6px);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.2),
+    0 20px 60px rgba(0, 0, 0, 0.45);
+  animation: login-fade-in 0.5s ease both;
+}
+
+@keyframes login-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-card__crest {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--login-bg-deep);
+  border: 1px solid var(--login-border-strong);
+  color: var(--login-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.login-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--login-border);
+}
+
+.login-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--login-ink-dim);
+  font-family: "Caudex", serif;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.5rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.login-tab:hover {
+  color: var(--login-ink);
+}
+
+.login-tab.is-active {
+  color: var(--login-gold-soft);
+  border-bottom-color: var(--login-gold);
+}
+
+.login-field {
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
+.login-field__label {
+  display: block;
+  font-family: "Caudex", serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  color: var(--login-ink-dim);
+  margin-bottom: 0.4rem;
+}
+
+.login-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--login-border);
+  border-radius: 8px;
+  padding: 0.7rem 0.85rem;
+  font-family: "Caudex", serif;
+  font-size: 1rem;
+  color: var(--login-ink);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: var(--login-border-strong);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+.login-error,
+.login-success {
+  font-size: 0.9rem;
+  margin: -0.5rem 0 1rem;
+  font-family: "Caudex", serif;
+}
+
+.login-error {
+  color: var(--login-danger);
+}
+
+.login-success {
+  color: var(--login-success);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--login-border-strong);
+  background: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0.25),
+    rgba(212, 175, 55, 0.08)
+  );
+  color: var(--login-gold-soft);
+  font-family: "Caudex", serif;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.login-btn:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0.35),
+    rgba(212, 175, 55, 0.12)
+  );
+}
+
+.login-btn:active {
+  transform: translateY(1px);
+}
+
+.login-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.login-subtext {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--login-ink-dim);
+}
+
+.login-linklike {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--login-gold-soft);
+  font-family: "Caudex", serif;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 420px) {
+  .login-card {
+    padding: 2rem 1.25rem 1.5rem;
+  }
+}
