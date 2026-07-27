@@ -37,9 +37,14 @@ async function requireMod() {
   }
 
   const teamName = user.email.split("@")[0].toLowerCase();
+
   if (teamName !== "mod") {
+    document.getElementById("mod-dashboard")?.remove();
     return false;
   }
+
+  document.getElementById("mod-dashboard").hidden = false;
+
   return true;
 }
 
@@ -264,7 +269,7 @@ async function renderLeaderboard() {
             <td class="score">${r.score}</td>
         </tr>`,
           )
-          .join("")}
+          .join("")}re
     </tbody>
 </table>
 `;
