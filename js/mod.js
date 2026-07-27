@@ -1,4 +1,10 @@
 import { supabase } from "./supabase_init.js";
+import {
+  scoreForTeam,
+  finalizeExpiredGames,
+  getDeadline,
+  formatCountdown,
+} from "./scoring.js";
 
 const HOUSE_LABELS = {
   planeswalkers: "Planeswalkers",
@@ -12,19 +18,20 @@ const HOUSE_LABELS = {
 };
 const HOUSE_KEYS = Object.keys(HOUSE_LABELS);
 const ROUND_SIZE = 4;
-const INITIAL_SCORE = 10;
-
-// Must match the payoff matrix in game.js exactly, or scores will disagree
-// between the player view and the mod leaderboard.
-const PAYOFF_MATRIX = {
-  split: { split: 3, steal: 0 },
-  steal: { split: 5, steal: 1 },
-};
 
 // Two dedicated panels inside the .mod-dashboard grid (see index HTML),
 // rather than one container that gets clobbered on every re-render.
 const roundArea = document.getElementById("round-panel");
 const leaderboardArea = document.getElementById("leaderboard-panel");
+
+let roundCountdownId = null;
+
+function clearRoundCountdown() {
+  if (roundCountdownId) {
+    clearInterval(roundCountdownId);
+    roundCountdownId = null;
+  }
+}
 
 async function requireMod() {
   const {
@@ -37,14 +44,10 @@ async function requireMod() {
   }
 
   const teamName = user.email.split("@")[0].toLowerCase();
-
   if (teamName !== "mod") {
     document.getElementById("mod-dashboard")?.remove();
     return false;
   }
-
-  document.getElementById("mod-dashboard").hidden = false;
-
   return true;
 }
 
@@ -54,7 +57,27 @@ function buildOptionsHtml() {
   ).join("");
 }
 
-function renderRoundForm() {
+// Decides which of the two round-panel views to show: the create-round
+// form (no round in progress) or the live countdown view (round ongoing).
+async function renderRoundPanel() {
+  clearRoundCountdown();
+
+  const allGames = await fetchAllGames();
+  await finalizeExpiredGames(allGames);
+
+  // Re-fetch in case finalizeExpiredGames just changed something above,
+  // so the view we render reflects the true current state.
+  const freshGames = await fetchAllGames();
+  const ongoing = freshGames.filter((g) => g.status === "ongoing");
+
+  if (ongoing.length > 0) {
+    renderActiveRoundView(ongoing);
+  } else {
+    renderCreateRoundForm();
+  }
+}
+
+function renderCreateRoundForm() {
   const rows = Array.from({ length: ROUND_SIZE })
     .map(
       (_, i) => `
@@ -96,6 +119,63 @@ function renderRoundForm() {
   document
     .getElementById("submit-round-btn")
     .addEventListener("click", handleSubmitRound);
+}
+
+// Shown instead of the form while games are still "ongoing". Displays a
+// shared round countdown plus each matchup's answered-so-far status
+// (without revealing the actual choices — that stays secret until the
+// round finishes, same as the player view).
+function renderActiveRoundView(ongoingGames) {
+  const roundDeadline = Math.min(...ongoingGames.map(getDeadline));
+
+  const rows = ongoingGames
+    .map((g) => {
+      const answered = [g.team1_choice, g.team2_choice].filter(Boolean).length;
+      return `
+<tr>
+    <td>${HOUSE_LABELS[g.team1] ?? g.team1}</td>
+    <td class="vs-cell">VS</td>
+    <td>${HOUSE_LABELS[g.team2] ?? g.team2}</td>
+    <td class="answer-status">${answered}/2 answered</td>
+</tr>`;
+    })
+    .join("");
+
+  roundArea.innerHTML = `
+<div class="mod-title">
+    <h2>Round In Progress</h2>
+    <p>Waiting for houses to submit their choices.</p>
+</div>
+<div class="round-timer-bar">
+    <span>Time left:</span> <span id="round-timer">--:--</span>
+</div>
+<table class="round-table active-round-table">
+    <thead><tr><th>Team 1</th><th></th><th>Team 2</th><th>Status</th></tr></thead>
+    <tbody>${rows}</tbody>
+</table>
+`;
+
+  startRoundCountdown(roundDeadline, ongoingGames);
+}
+
+function startRoundCountdown(deadline, ongoingGames) {
+  const timerEl = document.getElementById("round-timer");
+  if (!timerEl) return;
+
+  const tick = async () => {
+    const remaining = deadline - Date.now();
+    timerEl.textContent = formatCountdown(remaining);
+
+    if (remaining <= 0) {
+      clearRoundCountdown();
+      await finalizeExpiredGames(ongoingGames);
+      await renderRoundPanel();
+      await renderLeaderboard();
+    }
+  };
+
+  tick();
+  roundCountdownId = setInterval(tick, 1000);
 }
 
 function showRoundError(message) {
@@ -149,20 +229,6 @@ async function fetchAllGames() {
   return data;
 }
 
-function scoreForTeam(allGames, team) {
-  return (
-    INITIAL_SCORE +
-    allGames.reduce((sum, g) => {
-      if (g.status !== "completed") return sum;
-      if (g.team1 !== team && g.team2 !== team) return sum;
-      const mine = g.team1 === team ? g.team1_choice : g.team2_choice;
-      const theirs = g.team1 === team ? g.team2_choice : g.team1_choice;
-      if (!mine || !theirs) return sum;
-      return sum + PAYOFF_MATRIX[mine][theirs];
-    }, 0)
-  );
-}
-
 async function checkNoHistoricalRepeats(matchups) {
   const allGames = await fetchAllGames();
   const playedPairs = new Set(
@@ -178,11 +244,14 @@ async function checkNoHistoricalRepeats(matchups) {
   return null;
 }
 
-async function allGamesCompleted() {
+// "Completed" is no longer the only terminal state (there's also
+// "missed" and "unanswered" once a round's timer runs out), so this
+// checks for the one status that actually blocks a new round: "ongoing".
+async function noOngoingGames() {
   const { data, error } = await supabase
     .from("games")
     .select("game_id")
-    .neq("status", "completed")
+    .eq("status", "ongoing")
     .limit(1);
 
   if (error) {
@@ -215,7 +284,7 @@ async function handleSubmitRound() {
       return;
     }
 
-    const clear = await allGamesCompleted();
+    const clear = await noOngoingGames();
     if (!clear) {
       showRoundError(
         "Can't start a new round — there are still ongoing games.",
@@ -232,7 +301,7 @@ async function handleSubmitRound() {
       return;
     }
 
-    renderRoundForm(); // resets the form only; leaderboard panel is independent now
+    await renderRoundPanel(); // will now show the active-round countdown view
     await renderLeaderboard();
   } catch (err) {
     console.error(err);
@@ -269,27 +338,30 @@ async function renderLeaderboard() {
             <td class="score">${r.score}</td>
         </tr>`,
           )
-          .join("")}re
+          .join("")}
     </tbody>
 </table>
 `;
 }
 
-function subscribeToLeaderboardUpdates() {
+function subscribeToGameChanges() {
   supabase
-    .channel("mod-leaderboard")
+    .channel("mod-dashboard")
     .on(
       "postgres_changes",
       { event: "*", schema: "public", table: "games" },
-      () => renderLeaderboard(),
+      () => {
+        renderRoundPanel();
+        renderLeaderboard();
+      },
     )
     .subscribe();
 }
 
 (async function init() {
   if (await requireMod()) {
-    renderRoundForm();
+    await renderRoundPanel();
     await renderLeaderboard();
-    subscribeToLeaderboardUpdates();
+    subscribeToGameChanges();
   }
 })();

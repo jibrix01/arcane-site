@@ -1,8 +1,15 @@
 import { supabase } from "./supabase_init.js";
+import {
+  isTeam1,
+  myAndTheirChoice,
+  getOpponent,
+  getDeadline,
+  scoreForTeam,
+  finalizeExpiredGames,
+  formatCountdown,
+} from "./scoring.js";
 
 const gameArea = document.getElementById("game-area");
-
-const INITIAL_SCORE = 10;
 
 const houses = {
   planeswalkers: {
@@ -72,41 +79,7 @@ const houses = {
   },
 };
 
-// ---------- payoff / scoring ----------
-const PAYOFF_MATRIX = {
-  split: { split: 3, steal: 0 },
-  steal: { split: 5, steal: 1 },
-};
-
-function isTeam1(game, myTeam) {
-  return game.team1 === myTeam;
-}
-
-function myAndTheirChoice(game, myTeam) {
-  return isTeam1(game, myTeam)
-    ? { mine: game.team1_choice, theirs: game.team2_choice }
-    : { mine: game.team2_choice, theirs: game.team1_choice };
-}
-
-function totalScore(completedGames, myTeam) {
-  return completedGames.reduce((sum, g) => {
-    const { mine, theirs } = myAndTheirChoice(g, myTeam);
-    if (!mine || !theirs) return sum;
-    return sum + PAYOFF_MATRIX[mine][theirs];
-  }, 0);
-}
-
-// Works for ANY team (mine or the opponent's) against the full games list.
-function scoreForTeam(allGames, team) {
-  const completed = allGames.filter(
-    (g) => g.status === "completed" && (g.team1 === team || g.team2 === team),
-  );
-  return INITIAL_SCORE + totalScore(completed, team);
-}
-
-function getOpponent(game, myTeam) {
-  return isTeam1(game, myTeam) ? game.team2 : game.team1;
-}
+const FINISHED_STATUSES = ["completed", "missed", "unanswered"];
 
 function capitalize(str) {
   if (!str) return str;
@@ -121,14 +94,24 @@ function createCard(
     waiting = false,
     score = null,
     myChoice = null,
-    theirChoice = null,
+    finished = false,
+    status = null,
   } = {},
 ) {
-  const revealChoices = myChoice !== null && theirChoice !== null;
-
   let bodyText;
-  if (revealChoices) {
-    bodyText = `You chose <strong>${capitalize(myChoice)}</strong>`;
+
+  if (finished) {
+    if (status === "completed") {
+      bodyText = `You chose <strong>${capitalize(myChoice)}</strong>`;
+    } else if (status === "missed") {
+      bodyText = myChoice
+        ? `You chose <strong>${capitalize(myChoice)}</strong> — your opponent missed the deadline. <strong>+5</strong>`
+        : `You missed the deadline. <strong>-2</strong>`;
+    } else if (status === "unanswered") {
+      bodyText = "Neither house answered in time. No points awarded.";
+    } else {
+      bodyText = team.description;
+    }
   } else if (waiting) {
     bodyText = "Waiting for your opponent's move...";
   } else {
@@ -169,13 +152,25 @@ function createRevealedEnemyCard(
   {
     score = null,
     alreadyChose = false,
-    revealChoices = false,
+    finished = false,
+    status = null,
     theirChoice = null,
   } = {},
 ) {
   let statusLine;
-  if (revealChoices) {
-    statusLine = `Chose <strong>${capitalize(theirChoice)}</strong>`;
+
+  if (finished) {
+    if (status === "completed") {
+      statusLine = `Chose <strong>${capitalize(theirChoice)}</strong>`;
+    } else if (status === "missed") {
+      statusLine = theirChoice
+        ? `Chose <strong>${capitalize(theirChoice)}</strong> — you missed the deadline. <strong>+5</strong> for them.`
+        : `Missed the deadline. <strong>-2</strong> for them.`;
+    } else if (status === "unanswered") {
+      statusLine = "Neither house answered in time.";
+    } else {
+      statusLine = "Deciding...";
+    }
   } else if (alreadyChose) {
     statusLine = "Their move is locked in.";
   } else {
@@ -216,6 +211,36 @@ async function fetchAllGames() {
 let teamName = null;
 let subscribed = false;
 let submissionInFlight = false;
+let countdownId = null;
+
+function clearCountdown() {
+  if (countdownId) {
+    clearInterval(countdownId);
+    countdownId = null;
+  }
+}
+
+function startCountdown(game) {
+  clearCountdown();
+  const timerEl = document.getElementById("round-timer");
+  if (!timerEl) return;
+
+  const tick = async () => {
+    const remaining = getDeadline(game) - Date.now();
+    timerEl.textContent = formatCountdown(remaining);
+
+    if (remaining <= 0) {
+      clearCountdown();
+      // My clock hit zero — flip this game's status if nobody else has
+      // already done so, then reload to show the final outcome.
+      await finalizeExpiredGames([game]);
+      await loadGame();
+    }
+  };
+
+  tick();
+  countdownId = setInterval(tick, 1000);
+}
 
 async function loadGame() {
   const {
@@ -241,15 +266,22 @@ async function loadGame() {
     return;
   }
 
-  const allGames = await fetchAllGames();
+  let allGames = await fetchAllGames();
+
+  // Catch any round whose timer ran out while nobody was watching (e.g.
+  // the page just loaded), then re-fetch so we render the true state
+  // instead of waiting on the realtime event to bounce back.
+  await finalizeExpiredGames(allGames);
+  allGames = await fetchAllGames();
+
   const myGames = allGames.filter(
     (g) => g.team1 === teamName || g.team2 === teamName,
   );
   const myScore = scoreForTeam(allGames, teamName);
 
-  // Most recent game involving me — could be "ongoing" or the just-finished
-  // "completed" one. This is what keeps the result visible after both
-  // players have chosen, instead of vanishing the instant status flips.
+  // Most recent game involving me — could be "ongoing" or the
+  // just-finished round. This is what keeps the result visible after
+  // the round ends instead of vanishing the instant status flips.
   const currentGame = myGames[0] || null;
 
   if (!subscribed) {
@@ -259,6 +291,7 @@ async function loadGame() {
 
   let playerCardHtml;
   let enemyCardHtml;
+  let timerHtml = "";
 
   if (currentGame) {
     const { mine, theirs } = myAndTheirChoice(currentGame, teamName);
@@ -266,35 +299,52 @@ async function loadGame() {
     const opponentHouse = houses[opponentKey];
     const opponentScore = scoreForTeam(allGames, opponentKey);
 
-    const isCompleted = currentGame.status === "completed";
-    const bothIn = !!mine && !!theirs;
-    const revealChoices = isCompleted || bothIn;
+    const finished = FINISHED_STATUSES.includes(currentGame.status);
 
     playerCardHtml = createCard(team, {
-      locked: !!mine || isCompleted,
-      waiting: !!mine && !revealChoices,
+      locked: finished || !!mine,
+      waiting: !!mine && !finished,
       score: myScore,
-      myChoice: revealChoices ? mine : null,
-      theirChoice: revealChoices ? theirs : null,
+      myChoice: mine,
+      finished,
+      status: currentGame.status,
     });
 
     enemyCardHtml = opponentHouse
       ? createRevealedEnemyCard(opponentHouse, {
           score: opponentScore,
           alreadyChose: !!theirs,
-          revealChoices,
-          theirChoice: revealChoices ? theirs : null,
+          finished,
+          status: currentGame.status,
+          theirChoice: theirs,
         })
       : createEnemyCard();
+
+    // Keep showing the countdown until the real deadline passes, even if
+    // both sides already answered and the status flipped to "completed"
+    // early — the round isn't visually "over" until the clock is.
+    const timeLeft = getDeadline(currentGame) - Date.now();
+    if (timeLeft > 0) {
+      timerHtml = `
+  <div id="round-timer" class="round-timer"></div>
+`;
+    }
   } else {
     playerCardHtml = createCard(team, { locked: true, score: myScore });
     enemyCardHtml = createEnemyCard();
   }
 
   gameArea.innerHTML = `
+    ${timerHtml}
     <div class="player-side">${playerCardHtml}</div>
     <div class="enemy-side">${enemyCardHtml}</div>
   `;
+
+  if (currentGame && getDeadline(currentGame) - Date.now() > 0) {
+    startCountdown(currentGame);
+  } else {
+    clearCountdown();
+  }
 
   if (currentGame && currentGame.status === "ongoing") {
     const { mine } = myAndTheirChoice(currentGame, teamName);

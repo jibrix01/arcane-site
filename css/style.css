@@ -999,7 +999,23 @@ ARCANA SPLIT OR STEAL GAME
   text-shadow: 0 0 18px rgba(201, 162, 39, 0.35);
 }
 
+.round-timer {
+  flex: 0 0 100%;
+  width: 100%;
+  text-align: center;
+
+  margin-bottom: 0.5rem;
+
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.12em;
+  color: var(--gold-bright);
+
+  text-shadow: 0 0 15px rgba(201, 162, 39, 0.35);
+}
+
 /* MOD */
+/* ---------- Dashboard layout ---------- */
 /* ---------- Dashboard layout ---------- */
 
 .mod-dashboard {
@@ -1211,4 +1227,38 @@ ARCANA SPLIT OR STEAL GAME
   font-size: 1.1rem;
   color: var(--gold-bright);
   font-family: var(--font-display);
+}
+
+/* ---------- Round timer (shown on both mod and player views) ---------- */
+
+.round-timer-bar {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.5rem;
+
+  margin-bottom: 1.5rem;
+  padding: 0.6rem 1rem;
+
+  border: 1px solid var(--gold-dim);
+  border-radius: 8px;
+
+  color: var(--parchment-dim);
+  font-size: 0.9rem;
+}
+
+.round-timer-bar #round-timer {
+  color: var(--gold-bright);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Active-round view (mod side, while a round is in progress) ---------- */
+
+.answer-status {
+  text-align: center;
+  color: var(--parchment-dim);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
 }
