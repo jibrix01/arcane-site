@@ -11,9 +11,20 @@ const HOUSE_LABELS = {
   lightbearers: "Lightbearers",
 };
 const HOUSE_KEYS = Object.keys(HOUSE_LABELS);
-const ROUND_SIZE = 4; // 2 cols x 4 rows
+const ROUND_SIZE = 4;
+const INITIAL_SCORE = 10;
 
-const roundArea = document.getElementById("round-setup");
+// Must match the payoff matrix in game.js exactly, or scores will disagree
+// between the player view and the mod leaderboard.
+const PAYOFF_MATRIX = {
+  split: { split: 3, steal: 0 },
+  steal: { split: 5, steal: 1 },
+};
+
+// Two dedicated panels inside the .mod-dashboard grid (see index HTML),
+// rather than one container that gets clobbered on every re-render.
+const roundArea = document.getElementById("round-panel");
+const leaderboardArea = document.getElementById("leaderboard-panel");
 
 async function requireMod() {
   const {
@@ -27,7 +38,6 @@ async function requireMod() {
 
   const teamName = user.email.split("@")[0].toLowerCase();
   if (teamName !== "mod") {
-    // Not the mod — leave #round-setup empty, don't reveal that this exists
     return false;
   }
   return true;
@@ -50,11 +60,7 @@ function renderRoundForm() {
             ${buildOptionsHtml()}
         </select>
     </td>
-
-    <td class="vs-cell">
-        VS
-    </td>
-
+    <td class="vs-cell">VS</td>
     <td>
         <select class="team2-select">
             <option value="">Choose House...</option>
@@ -66,42 +72,19 @@ function renderRoundForm() {
     .join("");
 
   roundArea.innerHTML = `
-<div class="tracker-panel round-panel">
-
-    <div class="page-head">
-        <div class="eyebrow">Moderator Console</div>
-        <h2>Start a New Round</h2>
-        <p>
-            Pair each House exactly once. Previous matchups cannot be repeated.
-        </p>
-    </div>
-
-    <table class="round-table">
-        <thead>
-            <tr>
-                <th>Team 1</th>
-                <th></th>
-                <th>Team 2</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            ${rows}
-        </tbody>
-    </table>
-
-    <p id="round-error" class="login-error" hidden></p>
-
-    <div class="round-actions">
-        <button
-            type="button"
-            id="submit-round-btn"
-            class="rune-button"
-        >
-            ✦ Start New Round
-        </button>
-    </div>
-
+<div class="mod-title">
+    <h2>Create Round</h2>
+    <p>Select four unique matchups.</p>
+</div>
+<table class="round-table matchup-table">
+    <thead><tr><th>Team 1</th><th></th><th>Team 2</th></tr></thead>
+    <tbody>${rows}</tbody>
+</table>
+<p id="round-error" class="login-error" hidden></p>
+<div class="round-actions">
+    <button type="button" id="submit-round-btn" class="rune-button">
+        ✦ Start New Round
+    </button>
 </div>
 `;
 
@@ -123,7 +106,7 @@ function clearRoundError() {
 }
 
 function collectMatchupsFromForm() {
-  return Array.from(document.querySelectorAll(".round-table tbody tr")).map(
+  return Array.from(document.querySelectorAll(".matchup-table tbody tr")).map(
     (row) => ({
       team1: row.querySelector(".team1-select").value,
       team2: row.querySelector(".team2-select").value,
@@ -131,8 +114,6 @@ function collectMatchupsFromForm() {
   );
 }
 
-// Client-side pre-check for instant feedback — mirrors the same rules
-// enforced authoritatively inside create_new_round() in Postgres.
 function validateMatchups(matchups) {
   const seenTeams = new Set();
   const seenPairs = new Set();
@@ -154,16 +135,31 @@ function validateMatchups(matchups) {
   return null;
 }
 
-async function checkNoHistoricalRepeats(matchups) {
-  const { data: allGames, error } = await supabase
-    .from("games")
-    .select("team1, team2");
-
+async function fetchAllGames() {
+  const { data, error } = await supabase.from("games").select("*");
   if (error) {
-    console.error("Failed to check match history:", error);
-    return null; // let the server-side check be the final word
+    console.error("Failed to fetch games:", error);
+    return [];
   }
+  return data;
+}
 
+function scoreForTeam(allGames, team) {
+  return (
+    INITIAL_SCORE +
+    allGames.reduce((sum, g) => {
+      if (g.status !== "completed") return sum;
+      if (g.team1 !== team && g.team2 !== team) return sum;
+      const mine = g.team1 === team ? g.team1_choice : g.team2_choice;
+      const theirs = g.team1 === team ? g.team2_choice : g.team1_choice;
+      if (!mine || !theirs) return sum;
+      return sum + PAYOFF_MATRIX[mine][theirs];
+    }, 0)
+  );
+}
+
+async function checkNoHistoricalRepeats(matchups) {
+  const allGames = await fetchAllGames();
   const playedPairs = new Set(
     allGames.map((g) => [g.team1, g.team2].sort().join("-")),
   );
@@ -222,8 +218,6 @@ async function handleSubmitRound() {
       return;
     }
 
-    // Server-side function re-checks everything and inserts atomically —
-    // this is the actual ACID guarantee, the checks above are just UX.
     const { error: rpcError } = await supabase.rpc("create_new_round", {
       matchups,
     });
@@ -233,7 +227,8 @@ async function handleSubmitRound() {
       return;
     }
 
-    renderRoundForm(); // reset for the next round
+    renderRoundForm(); // resets the form only; leaderboard panel is independent now
+    await renderLeaderboard();
   } catch (err) {
     console.error(err);
     showRoundError("Something went wrong. Check the console for details.");
@@ -243,8 +238,53 @@ async function handleSubmitRound() {
   }
 }
 
+async function renderLeaderboard() {
+  if (!leaderboardArea) return;
+
+  const allGames = await fetchAllGames();
+  const rows = HOUSE_KEYS.map((key) => ({
+    key,
+    score: scoreForTeam(allGames, key),
+  })).sort((a, b) => b.score - a.score);
+
+  leaderboardArea.innerHTML = `
+<div class="mod-title">
+    <h2>Leaderboard</h2>
+    <p>Current standings</p>
+</div>
+<table class="round-table leaderboard-table">
+    <thead><tr><th></th><th>House</th><th>Score</th></tr></thead>
+    <tbody>
+        ${rows
+          .map(
+            (r, i) => `
+        <tr class="${i === 0 ? "is-leader" : ""}">
+            <td class="rank">${i + 1}</td>
+            <td>${HOUSE_LABELS[r.key]}</td>
+            <td class="score">${r.score}</td>
+        </tr>`,
+          )
+          .join("")}
+    </tbody>
+</table>
+`;
+}
+
+function subscribeToLeaderboardUpdates() {
+  supabase
+    .channel("mod-leaderboard")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "games" },
+      () => renderLeaderboard(),
+    )
+    .subscribe();
+}
+
 (async function init() {
   if (await requireMod()) {
     renderRoundForm();
+    await renderLeaderboard();
+    subscribeToLeaderboardUpdates();
   }
 })();
