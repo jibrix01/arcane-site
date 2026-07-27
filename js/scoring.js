@@ -3,7 +3,7 @@ import { supabase } from "./supabase_init.js";
 export const INITIAL_SCORE = 10;
 
 // Each round is open for 10 minutes from the moment its games are created.
-const round_mins = 30;
+const round_mins = 15;
 const round_secs = 0;
 export const ROUND_DURATION_MS = (round_mins * 60 + round_secs) * 1000;
 
