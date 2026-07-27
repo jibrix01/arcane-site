@@ -1,7 +1,5 @@
 import { supabase } from "./supabase_init.js";
 
-// Where to send someone once they're signed in.
-// Change this to whatever your Houses / landing page is actually called.
 const REDIRECT_TO = "index.html";
 
 const form = document.getElementById("auth-form");

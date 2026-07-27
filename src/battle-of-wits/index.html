@@ -11,6 +11,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/src/battle-of-wits/login.css" />
     <!-- Guard runs before the page paints its contents; sends anyone
          without a session straight to login.html -->
     <script type="module" src="/js/auth-guard.js"></script>
@@ -24,12 +25,8 @@
     <main>
       <div class="wrap">
         <div class="page-head">
-          <p class="eyebrow">Eight Cards, Chosen</p>
-          <h1>The Houses</h1>
-          <p>
-            8 Houses chosen by the Arcane, only one shall remain gilded. IT
-            WORKS
-          </p>
+          <p>Signed in as <strong id="user-email"></strong></p>
+          <script type="module" src="/js/user.js"></script>
           <button
             type="button"
             data-logout
@@ -40,126 +37,12 @@
           </button>
         </div>
 
-        <div class="house-grid">
-          <article class="tarot-card" style="animation-delay: 0.05s">
-            <span class="tarot-card__num">I</span>
-            <span class="tarot-card__arcana">The Magician</span>
-            <div class="tarot-card__icon">
-              <img src="/assets/icons/magician.png" alt="The Magician" />
-            </div>
-            <h3>Planeswalkers</h3>
-            <span class="tarot-card__sub">Arcana of Upheaval</span>
-            <p>
-              Every spell 🧙 begins with intention. Let your ingenuity weave
-              triumph 🏆, and may your hands create what others deem impossible.
-            </p>
-          </article>
-
-          <article class="tarot-card" style="animation-delay: 0.12s">
-            <span class="tarot-card__num">II</span>
-            <span class="tarot-card__arcana">The Star</span>
-            <div class="tarot-card__icon">
-              <img src="/assets/icons/star.png" alt="The Star" />
-            </div>
-            <h3>Trailblazers</h3>
-            <span class="tarot-card__sub">Arcana of Wonder</span>
-            <p>
-              Brimming with potential 🌟, come forth! A new Star to complete thy
-              divination 🔮. Believe in the path 🛣️ before you, and let optimism
-              guide every step.
-            </p>
-          </article>
-
-          <article class="tarot-card" style="animation-delay: 0.19s">
-            <span class="tarot-card__num">III</span>
-            <span class="tarot-card__arcana">The Emperor</span>
-            <div class="tarot-card__icon">
-              <img src="/assets/icons/emperor.png" alt="The Emperor" />
-            </div>
-            <h3>Conquerers</h3>
-            <span class="tarot-card__sub">Arcana of Command</span>
-            <p>
-              The throne is not inherited — it is earned 👑. As Emperor, you
-              must stand firm before every trial ⚖️, and let your resolve become
-              the foundation upon which victory is built 🏰.
-            </p>
-          </article>
-
-          <article class="tarot-card" style="animation-delay: 0.26s">
-            <span class="tarot-card__num">IV</span>
-            <span class="tarot-card__arcana">The Lovers</span>
-            <div class="tarot-card__icon">
-              <img src="/assets/icons/lovers.png" alt="The Lovers" />
-            </div>
-            <h3>Heartweavers</h3>
-            <span class="tarot-card__sub">Arcana of Bonds</span>
-            <p>
-              The stars 💫 have woven your paths together. May your choices be
-              guided by trust 🤝, and your courage by compassion 💗. The Lover's
-              path will find you.
-            </p>
-          </article>
-
-          <article class="tarot-card" style="animation-delay: 0.33s">
-            <span class="tarot-card__num">V</span>
-            <span class="tarot-card__arcana">The Chariot</span>
-            <div class="tarot-card__icon">
-              <img src="/assets/icons/chariot.png" alt="The Chariot" />
-            </div>
-            <h3>Pathmakers</h3>
-            <span class="tarot-card__sub">Arcana of Direction</span>
-            <p>
-              The Chariot and the road ahead belongs to the determined ⚔️. Let
-              your ambition push you forward ❤️‍🔥, for triumph favors those who
-              never cease moving. Ride with the winds.
-            </p>
-          </article>
-
-          <article class="tarot-card" style="animation-delay: 0.4s">
-            <span class="tarot-card__num">VI</span>
-            <span class="tarot-card__arcana">The Hermit</span>
-            <div class="tarot-card__icon">
-              <img src="/assets/icons/hermit.png" alt="The Hermit" />
-            </div>
-            <h3>Truthseekers</h3>
-            <span class="tarot-card__sub">Arcana of Clarity</span>
-            <p>
-              The lantern🏮you bear will lead you to victory. Trust your
-              insight, dear Hermit 💫, and let knowledge become your greatest
-              strength 💪.
-            </p>
-          </article>
-
-          <article class="tarot-card" style="animation-delay: 0.47s">
-            <span class="tarot-card__num">VII</span>
-            <span class="tarot-card__arcana">The Fool</span>
-            <div class="tarot-card__icon">
-              <img src="/assets/icons/fools.png" alt="The Fool" />
-            </div>
-            <h3>Descenders</h3>
-            <span class="tarot-card__sub">Arcana of Daring</span>
-            <p>
-              The Fool, the first step is yours to take 💫. Though the road
-              ahead is unknown, every great tale begins with a leap of faith 🍀.
-              Walk boldly, for the Arcana favors those unafraid to begin 🔆
-            </p>
-          </article>
-
-          <article class="tarot-card" style="animation-delay: 0.54s">
-            <span class="tarot-card__num">VIII</span>
-            <span class="tarot-card__arcana">The Sun</span>
-            <div class="tarot-card__icon">
-              <img src="/assets/icons/sun.png" alt="The Sun" />
-            </div>
-            <h3>Lightbearers</h3>
-            <span class="tarot-card__sub">Arcana of Warmth</span>
-            <p>
-              You have inherited the Sun's fire ❤️‍🔥. Burn brightly 🔆 so you may
-              illuminate your path ahead, but too much and it might cost you
-              more ⚱️.
-            </p>
-          </article>
+        <div id="game-area" class="game-area">
+          <p>Loading your Arcana...</p>
         </div>
+        <div id="round-setup"></div>
+        <script type="module" src="/js/game.js"></script>
+        <script type="module" src="/js/mod.js"></script>
       </div>
     </main>
 

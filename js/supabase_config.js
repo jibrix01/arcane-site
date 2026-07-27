@@ -1,0 +1,3 @@
+export const SUPABASE_URL = "https://bfiddybeylxeiivimgig.supabase.co";
+export const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmaWRkeWJleWx4ZWlpdmltZ2lnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNjg5NDMsImV4cCI6MjEwMDY0NDk0M30.08mcU5JpA6d-4sqBzNB0MEK9-wqv8OjHN-zOs6mdeBY";
