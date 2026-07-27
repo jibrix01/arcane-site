@@ -72,8 +72,8 @@ const houses = {
 
 // ---------- payoff / scoring ----------
 const PAYOFF_MATRIX = {
-  split: { split: 0, steal: -1 },
-  steal: { split: 1, steal: 0 },
+  split: { split: 3, steal: 0 },
+  steal: { split: 5, steal: 1 },
 };
 
 function isTeam1(game, myTeam) {
