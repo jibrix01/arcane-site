@@ -2,7 +2,7 @@ import { supabase } from "/js/supabase_init.js";
 
 const ALLOWED_EMAILS = new Set([
   "mod@bootcamp13.com",
-  "alanturing353@bootcamp.com",
+  "alanturing@bootcamp.com",
 ]);
 
 const qrContent = document.getElementById("qr-content");
