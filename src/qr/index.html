@@ -11,8 +11,11 @@
       href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="/src/battle-of-wits/login.css" />
+    <script type="module" src="/js/auth-guard.js"></script>
 
     <link rel="stylesheet" href="/css/style.css" />
+    <script type="module" src="/js/user.js"></script>
   </head>
 
   <body>
@@ -20,6 +23,18 @@
     <script src="/js/load-nav.js"></script>
 
     <main>
+      <div class="page-head">
+        <p>Signed in as <strong id="user-email"></strong></p>
+
+        <button
+          type="button"
+          data-logout
+          class="login-linklike"
+          style="margin-top: 0.75rem"
+        >
+          Sign out
+        </button>
+      </div>
       <section class="hero qr-page">
         <svg
           class="hero__sigil"
