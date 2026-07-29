@@ -22,34 +22,42 @@
     ];
   }
  
-  function renderChart(data) {
-    const max = Math.max(...data.map((d) => d.total), 1);
-    chartEl.innerHTML = "";
- 
-    data
-      .slice()
-      .sort((a, b) => b.total - a.total)
-      .forEach((house, i) => {
-        const col = document.createElement("div");
-        col.className = "bar-col" + (i === 0 ? " is-leader" : "");
-        col.innerHTML = `
-          <span class="bar-col__value">${house.total}</span>
-          <span class="bar-col__rank">${ordinal(i + 1)}</span>
-          <div class="bar-col__bar" data-target="${(house.total / max) * 100}"></div>
-          <span class="bar-col__name">${house.name}</span>
-        `;
-        chartEl.appendChild(col);
-      });
- 
+const SCALE_MAX = 80; // fixed ceiling so height reflects real score, not just "who's ahead"
+
+function renderChart(data) {
+  const max = Math.max(SCALE_MAX, ...data.map((d) => d.total));
+  chartEl.innerHTML = "";
+
+  const sorted = data.slice().sort((a, b) => b.total - a.total);
+  const leaderTotal = sorted[0]?.total ?? 0;
+
+  sorted.forEach((house, i) => {
+    const col = document.createElement("div");
+    const rankClass =
+      i === 0 ? " is-leader" : i === 1 ? " is-second" : i === 2 ? " is-third" : "";
+    col.className = "bar-col" + rankClass;
+
+    const gap = leaderTotal - house.total;
+
+    col.innerHTML = `
+      <span class="bar-col__value">${house.total}</span>
+      ${i > 0 ? `<span class="bar-col__gap">-${gap}</span>` : ""}
+      <span class="bar-col__rank">${ordinal(i + 1)}</span>
+      <div class="bar-col__bar" data-target="${(house.total / max) * 100}"></div>
+      <span class="bar-col__name">${house.name}</span>
+    `;
+    chartEl.appendChild(col);
+  });
+
+  requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        chartEl.querySelectorAll(".bar-col__bar").forEach((bar) => {
-          const pct = parseFloat(bar.dataset.target);
-          bar.style.height = `${Math.max(pct, 3)}%`;
-        });
+      chartEl.querySelectorAll(".bar-col__bar").forEach((bar) => {
+        const pct = parseFloat(bar.dataset.target);
+        bar.style.height = `${Math.max(pct, 3)}%`;
       });
     });
-  }
+  });
+}
  
   function ordinal(n) {
     const s = ["th", "st", "nd", "rd"];
