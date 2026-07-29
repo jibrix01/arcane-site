@@ -41,7 +41,6 @@ function renderChart(data) {
 
     col.innerHTML = `
       <span class="bar-col__value">${house.total}</span>
-      ${i > 0 ? `<span class="bar-col__gap">-${gap}</span>` : ""}
       <span class="bar-col__rank">${ordinal(i + 1)}</span>
       <div class="bar-col__bar" data-target="${(house.total / max) * 100}"></div>
       <span class="bar-col__name">${house.name}</span>
