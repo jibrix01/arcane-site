@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/src/magicians-number/login.css" />
+    <link rel="stylesheet" href="/src/amazing-race/login.css" />
     <link rel="stylesheet" href="/css/style.css" />
   </head>
 
@@ -21,7 +21,8 @@
 
     <main>
       <div class="page-head">
-        <p>Signed in as <strong id="user-email"></strong></p>
+        <h1>The Amazing Race</h1>
+        <p>Signed in as <strong id="user-email">Loading...</strong></p>
 
         <button
           type="button"
@@ -32,13 +33,18 @@
           Sign out
         </button>
       </div>
-      <div id="arcana-game"></div>
+
+      <!-- Application Container -->
+      <div id="race-app" class="wrap" style="padding-bottom: 4rem"></div>
     </main>
+
     <footer class="site-foot">
       &#10022; The Arcana watches in silence &#10022;
     </footer>
+
     <script type="module" src="/js/auth-guard.js"></script>
     <script type="module" src="/js/user.js"></script>
+    <script type="module" src="/js/amazing-race.js"></script>
     <script src="/js/embers.js"></script>
   </body>
 </html>
