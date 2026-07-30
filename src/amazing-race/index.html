@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bootcamp 13.0 | Arcana</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/magicians-number/login.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+
+  <body>
+    <div id="nav-placeholder"></div>
+    <script src="/js/load-nav.js"></script>
+
+    <main>
+      <div class="page-head">
+        <p>Signed in as <strong id="user-email"></strong></p>
+
+        <button
+          type="button"
+          data-logout
+          class="login-linklike"
+          style="margin-top: 0.75rem"
+        >
+          Sign out
+        </button>
+      </div>
+      <div id="arcana-game"></div>
+    </main>
+    <footer class="site-foot">
+      &#10022; The Arcana watches in silence &#10022;
+    </footer>
+    <script type="module" src="/js/auth-guard.js"></script>
+    <script type="module" src="/js/user.js"></script>
+    <script src="/js/embers.js"></script>
+  </body>
+</html>
