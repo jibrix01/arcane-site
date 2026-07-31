@@ -152,12 +152,50 @@ function renderStationView(raceData) {
       </div>
     `;
 
-    document.getElementById("btn-start").onclick = async () => {
+    document.getElementById("btn-start").onclick = async function () {
       const selectedTeam = document.getElementById("team-select").value;
       if (!selectedTeam) {
         alert("Please select a team first.");
         return;
       }
+
+      // 1. Check if the team has already won this station
+      const alreadyWon = raceData.some(
+        (r) =>
+          r.team_name === selectedTeam &&
+          r.station_tried === userIdentity &&
+          r.status === "won",
+      );
+
+      if (alreadyWon) {
+        alert(
+          `The ${capitalize(selectedTeam)} have already conquered Station ${userIdentity}!`,
+        );
+        return;
+      }
+
+      // 2. Check if the team is already attempting this station
+      const alreadyOngoing = raceData.some(
+        (r) =>
+          r.team_name === selectedTeam &&
+          r.station_tried === userIdentity &&
+          r.status === "ongoing",
+      );
+
+      if (alreadyOngoing) {
+        alert(
+          `The ${capitalize(selectedTeam)} are already attempting this station.`,
+        );
+        return;
+      }
+
+      // 3. Disable button to prevent double-clicks
+      const btn = this;
+      btn.disabled = true;
+      btn.innerHTML = "Consulting the Arcana...";
+      btn.style.opacity = "0.5";
+      btn.style.cursor = "not-allowed";
+
       await startStationSession(selectedTeam);
     };
   }
