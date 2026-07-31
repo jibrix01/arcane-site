@@ -119,10 +119,34 @@ function renderStationView(raceData) {
       </div>
     `;
 
-    document.getElementById("btn-win").onclick = () =>
-      updateStationStatus(activeSession.id, "won");
-    document.getElementById("btn-loss").onclick = () =>
-      updateStationStatus(activeSession.id, "lost");
+    const btnWin = document.getElementById("btn-win");
+    const btnLoss = document.getElementById("btn-loss");
+
+    btnWin.onclick = async function () {
+      // Disable both buttons
+      btnWin.disabled = true;
+      btnLoss.disabled = true;
+
+      // Update visual states
+      btnWin.innerHTML = "Processing...";
+      btnWin.style.cursor = "wait";
+      btnLoss.style.opacity = "0.3";
+
+      await updateStationStatus(activeSession.id, "won");
+    };
+
+    btnLoss.onclick = async function () {
+      // Disable both buttons
+      btnWin.disabled = true;
+      btnLoss.disabled = true;
+
+      // Update visual states
+      btnLoss.innerHTML = "Processing...";
+      btnLoss.style.cursor = "wait";
+      btnWin.style.opacity = "0.3";
+
+      await updateStationStatus(activeSession.id, "lost");
+    };
   } else {
     // Stage 1: Dropdown selection
     const optionsHtml = TEAMS.map(
