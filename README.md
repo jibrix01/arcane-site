@@ -2,7 +2,7 @@
 
 An interactive promotional website built for **Bootcamp 13.0**, a Computer Science freshman event in UP Diliman.
 
-<img width="1648" height="941" alt="image" src="https://github.com/user-attachments/assets/9dcfb1cd-007b-4f44-b192-9a9dda7f2d4c" />
+<img width="1668" height="945" alt="image" src="https://github.com/user-attachments/assets/7c1d096a-8e96-4329-81ad-4355773dce8b" />
 
 ## Features
 
@@ -10,7 +10,7 @@ An interactive promotional website built for **Bootcamp 13.0**, a Computer Scien
 
 The **Score Tracker** displays the current standings of all eight houses in a bar chart. Scores are loaded from a Google Sheet and sorted from highest to lowest.
 
-<img width="1652" height="923" alt="image" src="https://github.com/user-attachments/assets/634dc521-0ebf-4bdd-88b2-cb8c45e65f42" />
+<img width="1686" height="956" alt="image" src="https://github.com/user-attachments/assets/e44c2db5-7485-4ffb-b2e0-da0773365d07" />
 
 ### Whispers of the Arcane
 
@@ -18,7 +18,7 @@ The **Whispers of the Arcane** page is a small card-drawing advice page. Users c
 
 I wonder what the cards tell?
 
-<img width="1652" height="926" alt="image" src="https://github.com/user-attachments/assets/d8047c61-e3b5-45e8-a076-78523a6073ab" />
+<img width="1673" height="917" alt="image" src="https://github.com/user-attachments/assets/e5b605b8-95b0-43b5-a50a-5ef60aaf6ecb" />
 
 ### The Houses
 
@@ -35,11 +35,31 @@ The **Houses** page introduces the eight Bootcamp houses through tarot-inspired 
 | Descenders    | The Fool     |
 | Lightbearers  | The Sun      |
 
-![Uploading image.png…]()
+<img width="1676" height="972" alt="image" src="https://github.com/user-attachments/assets/827a43d3-65b8-48a2-8a1f-16c5d2730b23" />
 
 ### Program & Events
 
 The **Program & Events** page presents the three-day Bootcamp schedule as a visual roadmap covering **The Past, The Present, and The Future**. A full-size version of the roadmap can also be opened from the page.
+
+<img width="1685" height="972" alt="image" src="https://github.com/user-attachments/assets/632a9133-449d-43b1-a0d6-4ba0b3f84ef6" />
+
+### Battle of Wits
+
+An online game inspired by the mechanics of the game of trust. House can choose to cooperate with each other or betray each other, gaining some number of points depending on the outcome. 
+
+<img width="1280" height="832" alt="image" src="https://github.com/user-attachments/assets/4f46453d-811f-4a42-9d95-0080c7ed68c6" />
+
+<img width="949" height="631" alt="image" src="https://github.com/user-attachments/assets/a00d0c30-fb0c-489b-b286-5085cc86b8fb" />
+
+### Amazing Race
+
+Station handlers can choose which house is currently utilizing their respective station. House handlers can see through the dashboard which stations are occupied, allowing for easy facilitation of stations during the Amazing Race.
+
+<img width="1280" height="833" alt="image" src="https://github.com/user-attachments/assets/4198d7b1-7d27-44e5-81c5-2e9212701e44" />
+
+<img width="1280" height="833" alt="image" src="https://github.com/user-attachments/assets/69b12290-2188-4cb3-b5e6-6f265e50c35a" />
+
+<img width="1280" height="832" alt="image" src="https://github.com/user-attachments/assets/b1c60d0a-3ae7-4d05-9952-683028ff847c" />
 
 ## Stack
 
@@ -48,6 +68,7 @@ The **Program & Events** page presents the three-day Bootcamp schedule as a visu
 * JavaScript
 * Google Sheets
 * Node.js / npm for the project's dependency setup
+* Supabase
 
 The repository is primarily a static HTML/CSS/JavaScript site. Its `package.json` currently contains `dotenv` as its only dependency.
 
