@@ -47,19 +47,19 @@ The **Program & Events** page presents the three-day Bootcamp schedule as a visu
 
 An online game inspired by the mechanics of the game of trust. House can choose to cooperate with each other or betray each other, gaining some number of points depending on the outcome. 
 
-<img width="1280" height="832" alt="image" src="https://github.com/user-attachments/assets/4f46453d-811f-4a42-9d95-0080c7ed68c6" />
+<img width="1227" height="725" alt="image" src="https://github.com/user-attachments/assets/8628adc4-dcbf-4776-be84-fa1cdacdeacc" />
 
-<img width="949" height="631" alt="image" src="https://github.com/user-attachments/assets/a00d0c30-fb0c-489b-b286-5085cc86b8fb" />
+<img width="949" height="631" alt="image" src="https://github.com/user-attachments/assets/67a5d403-1772-4074-9f78-032b93630dd0" />
 
 ### Amazing Race
 
 Station handlers can choose which house is currently utilizing their respective station. House handlers can see through the dashboard which stations are occupied, allowing for easy facilitation of stations during the Amazing Race.
 
-<img width="1280" height="833" alt="image" src="https://github.com/user-attachments/assets/4198d7b1-7d27-44e5-81c5-2e9212701e44" />
+<img width="1512" height="892" alt="image" src="https://github.com/user-attachments/assets/44a15d19-8efb-4958-9999-1fd14558fa97" />
 
-<img width="1280" height="833" alt="image" src="https://github.com/user-attachments/assets/69b12290-2188-4cb3-b5e6-6f265e50c35a" />
+<img width="1527" height="897" alt="image" src="https://github.com/user-attachments/assets/fb73386c-3b47-4c91-b8db-c129b01ac3ed" />
 
-<img width="1280" height="832" alt="image" src="https://github.com/user-attachments/assets/b1c60d0a-3ae7-4d05-9952-683028ff847c" />
+<img width="1507" height="888" alt="image" src="https://github.com/user-attachments/assets/0394db2f-d02f-4fc1-b651-e92ba3bc5ba3" />
 
 ## Stack
 
