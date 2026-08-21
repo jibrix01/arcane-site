@@ -45,7 +45,7 @@ The **Program & Events** page presents the three-day Bootcamp schedule as a visu
 
 ### Battle of Wits
 
-An online game inspired by the mechanics of the game of trust. House can choose to cooperate with each other or betray each other, gaining some number of points depending on the outcome. 
+An online game inspired by the mechanics of the game of trust. House can choose to cooperate with each other or betray each other, gaining some number of points depending on the outcome. Each house can login using their respective account. Admin accounts have the access to choose which matchups will occur per round.
 
 <img width="1227" height="725" alt="image" src="https://github.com/user-attachments/assets/8628adc4-dcbf-4776-be84-fa1cdacdeacc" />
 
@@ -53,7 +53,7 @@ An online game inspired by the mechanics of the game of trust. House can choose 
 
 ### Amazing Race
 
-Station handlers can choose which house is currently utilizing their respective station. House handlers can see through the dashboard which stations are occupied, allowing for easy facilitation of stations during the Amazing Race.
+Station handlers can choose which house is currently utilizing their respective station. House handlers can see through the dashboard which stations are occupied, allowing for easy facilitation of stations during the Amazing Race. Station handlers and houses each have their own accounts that can log in.
 
 <img width="1512" height="892" alt="image" src="https://github.com/user-attachments/assets/44a15d19-8efb-4958-9999-1fd14558fa97" />
 
@@ -113,8 +113,6 @@ Install the project dependency:
 ```bash
 npm install
 ```
-
-Since the site is made primarily from static files, you can serve it with any local HTTP server. For example:
 
 ```bash
 npx serve .
